@@ -48,12 +48,17 @@ function box.createBox()
 	label.wrapText = true
 	label.justifyText = tes3.justifyText.center
 	label.color = box.colors[math.random(1, #box.colors)]
-	label.borderBottom = config.msgOffset
 
 	box.modData = func.getModDataP()
-	local lastMsg = pane:createLabel({ text = "Last Message:\n" .. box.modData.lastMsg .. "\n" })
-	lastMsg.color = { config.lastRed, config.lastGreen, config.lastBlue }
-	lastMsg.borderBottom = config.msgOffset
+
+	local day = func.i18n(string.format("msgBox.weekDay.%d", (tes3.worldController.daysPassed.value + 3) % 7 + 1))
+	local abb = func.i18n(string.format("msgBox.dayAbb.%d", tes3.worldController.day.value))
+	local dateMsg = pane:createLabel({ text = "~  " .. day .. ", " .. tes3.worldController.day.value .. "" .. abb .. " " .. tes3.findGMST(tes3.worldController.month.value).value .. "  ~" })
+	dateMsg.color = box.colors[1]
+	dateMsg.borderBottom = 12
+	dateMsg.borderTop = 12
+	dateMsg.wrapText = true
+	dateMsg.justifyText = tes3.justifyText.center
 
 	menu:findChild("PartDragMenu_left_title_block"):destroy()
 	menu:findChild("PartDragMenu_right_title_block"):destroy()

@@ -16,7 +16,7 @@ local function createPage(label)
         noScroll = false,
     }
     page.sidebar:createInfo {
-        text = "                          [Message Box] \n\nLogs all message boxes that pop up on the screen. These message boxes can come from anywhere, such as dialogue subtitles or messages displayed by mods. Optionally add additional logging such as exploration logging, combat logging, death logging, and spell resist logging. Toggle the box by using the box button (Default: B key).\n\n\nRecommended Box Dimensions:\n\nMessage Offset 2\n237x87 (Tiny, 2 lines)\n317x127 (Small, 4 lines)\n437x167 (Medium, 6 lines)\n517x207 (Large, 8 lines)\n597x247 (Extra Large, 10 lines)"
+        text = "                          [Message Box] \n\nLogs all message boxes that pop up on the screen. These message boxes can come from anywhere, such as dialogue subtitles or messages displayed by mods. Optionally add additional logging such as exploration logging, combat logging, death logging, and more. Toggle the box by using the box button (Default: B key).\n\n\nRecommended Box Dimensions:\n\nMessage Offset 2\n237x87 (Tiny, 2 lines)\n317x127 (Small, 4 lines)\n437x167 (Medium, 6 lines)\n517x207 (Large, 8 lines)\n597x247 (Extra Large, 10 lines)"
     }
     page.sidebar:createHyperLink {
         text = "Made by Kleidium",
@@ -106,7 +106,7 @@ cdSettings:createOnOffButton {
 
 cdSettings:createSlider {
     label = "Box Opacity",
-    description = "The opacity value of the box, from 0.0 to 1.0. Default: 0.7",
+    description = "The opacity value of the box, from 0.0 to 1.0. Default: 0.8",
     min = 0.0,
     max = 1.0,
     step = 0.1,
@@ -121,7 +121,7 @@ cdSettings:createSlider {
 
 cdSettings:createDropdown {
     label = "Initial Position",
-    description = "Set the initial box position. Default: Top Right",
+    description = "Set the initial box position. Default: Bottom",
     options = {
         { label = "Top", value = "top" },
         { label = "Bottom", value = "bottom" },
@@ -265,8 +265,14 @@ logSettings:createOnOffButton {
 }
 
 logSettings:createOnOffButton {
+    label = "Show Topics/Answers",
+    description = "If this is enabled, your answers to NPC questions and the topics you ask about are shown in the message box. Recommended for use with Chat Logging. Default: Off",
+    variable = mwse.mcm.createTableVariable { id = "showTopic", table = config }
+}
+
+logSettings:createOnOffButton {
     label = "Combat Logging",
-    description = "Turn on or off combat logging. Combat logging will announce damage dealt to and by the player by non-magical attacks. Default: Off",
+    description = "Turn on or off combat logging. Combat logging will announce health and fatigue damage dealt to and by the player by non-magical attacks. Default: Off",
     variable = mwse.mcm.createTableVariable { id = "dmgLog", table = config }
 }
 
@@ -294,494 +300,134 @@ logSettings:createOnOffButton {
     variable = mwse.mcm.createTableVariable { id = "musicLog", table = config }
 }
 
+logSettings:createOnOffButton {
+    label = "Show Full Path",
+    description = "If this is enabled, songs logged with the Music Log will display the full path instead of only the file name. Default: Off",
+    variable = mwse.mcm.createTableVariable { id = "musicPath", table = config }
+}
 
 
 --Colors----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 local cSettings = cPage:createCategory("Default Text Color") --White
 
-cSettings:createSlider {
-    label = "Text Color: Red",
-    description = "RGB RED value for message box text color. Default: 1.0",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "textRed",
-        table = config
+-- Helper: create three RGB sliders for a category.
+local function createRGBSliders(category, configIdBase, labelBase, descBase)
+    descBase = descBase or ("message box " .. labelBase:lower())
+    category:createSlider {
+        label = labelBase .. ": Red",
+        description = "RGB RED value for " .. descBase .. ".",
+        max = 1.00,
+        min = 0.00,
+        jump = 0.10,
+        step = 0.01,
+        decimalPlaces = 2,
+        variable = mwse.mcm.createTableVariable {
+            id = configIdBase .. "Red",
+            table = config
+        }
     }
-}
-
-cSettings:createSlider {
-    label = "Text Color: Green",
-    description = "RGB GREEN value for message box text color. Default: 1.0",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "textGreen",
-        table = config
+    category:createSlider {
+        label = labelBase .. ": Green",
+        description = "RGB GREEN value for " .. descBase .. ".",
+        max = 1.00,
+        min = 0.00,
+        jump = 0.10,
+        step = 0.01,
+        decimalPlaces = 2,
+        variable = mwse.mcm.createTableVariable {
+            id = configIdBase .. "Green",
+            table = config
+        }
     }
-}
-
-cSettings:createSlider {
-    label = "Text Color: Blue",
-    description = "RGB BLUE value for message box text color. Default: 1.0",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "textBlue",
-        table = config
+    category:createSlider {
+        label = labelBase .. ": Blue",
+        description = "RGB BLUE value for " .. descBase .. ".",
+        max = 1.00,
+        min = 0.00,
+        jump = 0.10,
+        step = 0.01,
+        decimalPlaces = 2,
+        variable = mwse.mcm.createTableVariable {
+            id = configIdBase .. "Blue",
+            table = config
+        }
     }
-}
+end
 
+createRGBSliders(cSettings, "text", "Text Color", "message box general text color. Default: 1.00")
 
 local hSettings = cPage:createCategory("Highlighted Text Color") --Pink
+createRGBSliders(hSettings, "high", "Highlight Color", "message box highlighted text color.")
 
-hSettings:createSlider {
-    label = "Highlight Color: Red",
-    description = "RGB RED value for message box highlighted text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "highRed",
-        table = config
-    }
-}
 
-hSettings:createSlider {
-    label = "Highlight Color: Green",
-    description = "RGB GREEN value for message box highlighted text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "highGreen",
-        table = config
-    }
-}
+-- local lasSettings = cPage:createCategory("Last Message Text Color") --Grey
 
-hSettings:createSlider {
-    label = "Highlight Color: Blue",
-    description = "RGB BLUE value for message box highlighted text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "highBlue",
-        table = config
-    }
-}
+-- lasSettings:createSlider {
+--     label = "Last Msg Color: Red",
+--     description = "RGB RED value for message box \"last message\" color.",
+--     max = 1.00,
+--     min = 0.00,
+-- 	jump = 0.10,
+-- 	step = 0.01,
+-- 	decimalPlaces = 2,
+--     variable = EasyMCM:createTableVariable {
+--         id = "lastRed",
+--         table = config
+--     }
+-- }
 
-local lasSettings = cPage:createCategory("Last Message Text Color") --Grey
+-- lasSettings:createSlider {
+--     label = "Last Msg Color: Green",
+--     description = "RGB GREEN value for message box \"last message\" color.",
+--     max = 1.00,
+--     min = 0.00,
+-- 	jump = 0.10,
+-- 	step = 0.01,
+-- 	decimalPlaces = 2,
+--     variable = EasyMCM:createTableVariable {
+--         id = "lastGreen",
+--         table = config
+--     }
+-- }
 
-lasSettings:createSlider {
-    label = "Last Msg Color: Red",
-    description = "RGB RED value for message box \"last message\" color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "lastRed",
-        table = config
-    }
-}
-
-lasSettings:createSlider {
-    label = "Last Msg Color: Green",
-    description = "RGB GREEN value for message box \"last message\" color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "lastGreen",
-        table = config
-    }
-}
-
-lasSettings:createSlider {
-    label = "Last Msg Color: Blue",
-    description = "RGB BLUE value for message box \"last message\" color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "lastBlue",
-        table = config
-    }
-}
+-- lasSettings:createSlider {
+--     label = "Last Msg Color: Blue",
+--     description = "RGB BLUE value for message box \"last message\" color.",
+--     max = 1.00,
+--     min = 0.00,
+-- 	jump = 0.10,
+-- 	step = 0.01,
+-- 	decimalPlaces = 2,
+--     variable = EasyMCM:createTableVariable {
+--         id = "lastBlue",
+--         table = config
+--     }
+-- }
 
 
 local cellSettings = cPage:createCategory("Exploration Log Text Color") --Green
-
-cellSettings:createSlider {
-    label = "Highlight Color: Red",
-    description = "RGB RED value for message box exploration text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "cellRed",
-        table = config
-    }
-}
-
-cellSettings:createSlider {
-    label = "Highlight Color: Green",
-    description = "RGB GREEN value for message box exploration text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "cellGreen",
-        table = config
-    }
-}
-
-cellSettings:createSlider {
-    label = "Highlight Color: Blue",
-    description = "RGB BLUE value for message box exploration text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "cellBlue",
-        table = config
-    }
-}
+createRGBSliders(cellSettings, "cell", "Highlight Color", "message box exploration log color")
 
 local dmgSettings = cPage:createCategory("Combat Log Text Color") --Red
-
-dmgSettings:createSlider {
-    label = "Combat Color: Red",
-    description = "RGB RED value for message box combat text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dmgRed",
-        table = config
-    }
-}
-
-dmgSettings:createSlider {
-    label = "Combat Color: Green",
-    description = "RGB GREEN value for message box combat text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dmgGreen",
-        table = config
-    }
-}
-
-dmgSettings:createSlider {
-    label = "Combat Color: Blue",
-    description = "RGB BLUE value for message box combat text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dmgBlue",
-        table = config
-    }
-}
+createRGBSliders(dmgSettings, "dmg", "Combat Color", "message box combat log color")
 
 local castSettings = cPage:createCategory("Cast Log Text Color") --Baby Blue
-
-castSettings:createSlider {
-    label = "Cast Color: Red",
-    description = "RGB RED value for message box cast log text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "castRed",
-        table = config
-    }
-}
-
-castSettings:createSlider {
-    label = "Cast Color: Green",
-    description = "RGB GREEN value for message box cast log text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "castGreen",
-        table = config
-    }
-}
-
-castSettings:createSlider {
-    label = "Cast Color: Blue",
-    description = "RGB BLUE value for message box cast log text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "castBlue",
-        table = config
-    }
-}
-
+createRGBSliders(castSettings, "cast", "Cast Color", "message box cast log color")
 
 local resSettings = cPage:createCategory("Resist Log Text Color") --Purple
-
-resSettings:createSlider {
-    label = "Resist Color: Red",
-    description = "RGB RED value for message box resist text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "resRed",
-        table = config
-    }
-}
-
-resSettings:createSlider {
-    label = "Resist Color: Green",
-    description = "RGB GREEN value for message box resist text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "resGreen",
-        table = config
-    }
-}
-
-resSettings:createSlider {
-    label = "Resist Color: Blue",
-    description = "RGB BLUE value for message box resist text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "resBlue",
-        table = config
-    }
-}
-
+createRGBSliders(resSettings, "res", "Resist Color", "message box resist log color")
 
 local dedSettings = cPage:createCategory("Death Log Text Color") --Orangish
-
-dedSettings:createSlider {
-    label = "Death Color: Red",
-    description = "RGB RED value for message box death text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dedRed",
-        table = config
-    }
-}
-
-dedSettings:createSlider {
-    label = "Death Color: Green",
-    description = "RGB GREEN value for message box death text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dedGreen",
-        table = config
-    }
-}
-
-dedSettings:createSlider {
-    label = "Death Color: Blue",
-    description = "RGB BLUE value for message box death text color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "dedBlue",
-        table = config
-    }
-}
+createRGBSliders(dedSettings, "ded", "Death Color", "message box death log color")
 
 local queSettings = cPage:createCategory("Quest Log Text Color") --Neon Blue
-
-queSettings:createSlider {
-    label = "Quest Color: Red",
-    description = "RGB RED value for message box quest log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "queRed",
-        table = config
-    }
-}
-
-queSettings:createSlider {
-    label = "Quest Color: Green",
-    description = "RGB GREEN value for message box quest log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "queGreen",
-        table = config
-    }
-}
-
-queSettings:createSlider {
-    label = "Quest Color: Blue",
-    description = "RGB BLUE value for message box quest log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "queBlue",
-        table = config
-    }
-}
+createRGBSliders(queSettings, "que", "Quest Color", "message box quest log color")
 
 local diaSettings = cPage:createCategory("Chat Log Text Color") --Yellow
+createRGBSliders(diaSettings, "dia", "Chat Color", "message box chat log color")
 
-diaSettings:createSlider {
-    label = "Chat Color: Red",
-    description = "RGB RED value for message box chat log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "diaRed",
-        table = config
-    }
-}
-
-diaSettings:createSlider {
-    label = "Chat Color: Green",
-    description = "RGB GREEN value for message box chat log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "diaGreen",
-        table = config
-    }
-}
-
-diaSettings:createSlider {
-    label = "Chat Color: Blue",
-    description = "RGB BLUE value for message box chat log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "diaBlue",
-        table = config
-    }
-}
-
+local topSettings = cPage:createCategory("Topic/Answer Text Color") --Answer Maroon
+createRGBSliders(topSettings, "top", "Topic/Answer Color", "message box Topic/Answer log color")
 
 local musSettings = cPage:createCategory("Music Log Text Color") --Minty
-
-musSettings:createSlider {
-    label = "Music Color: Red",
-    description = "RGB RED value for message box music log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "musRed",
-        table = config
-    }
-}
-
-musSettings:createSlider {
-    label = "Music Color: Green",
-    description = "RGB GREEN value for message box music log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "musGreen",
-        table = config
-    }
-}
-
-musSettings:createSlider {
-    label = "Music Color: Blue",
-    description = "RGB BLUE value for message box music log color.",
-    max = 1.00,
-    min = 0.00,
-	jump = 0.10,
-	step = 0.01,
-	decimalPlaces = 2,
-    variable = EasyMCM:createTableVariable {
-        id = "musBlue",
-        table = config
-    }
-}
+createRGBSliders(musSettings, "mus", "Music Color", "message box music log color")

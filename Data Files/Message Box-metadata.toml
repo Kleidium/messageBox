@@ -1,0 +1,11 @@
+[package]
+name = "Message Box"
+description = "This MWSE mod provides a message box that can entirely replace vanilla/modded notifications and track them. Highly customizable."
+homepage = "https://www.nexusmods.com/morrowind/mods/57553"
+repository = "https://github.com/Kleidium/messageBox"
+authors = ["Kleidium"]
+version = "1.0.0"
+
+[tools.mwse]
+lua-mod = "messageBox"
+wait-until-initialize = true

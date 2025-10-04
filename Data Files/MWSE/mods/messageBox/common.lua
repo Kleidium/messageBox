@@ -1,4 +1,3 @@
-local config = require("messageBox.config")
 local log = mwse.Logger.new()
 
 local this = {}
@@ -20,6 +19,7 @@ function this.getModDataP()
     return tes3.player.data.messageBox
 end
 
-
+--Translations
+this.i18n = mwse.loadTranslations("messageBox")
 
 return this
