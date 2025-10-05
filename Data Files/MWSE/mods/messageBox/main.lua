@@ -280,18 +280,18 @@ end)
 local function onCellChanged(e)
 	if config.cellLog then
 		if not e.previousCell then return end
-		if e.cell.name ~= e.previousCell.name then
+		if e.cell.displayName ~= e.previousCell.displayName then
 			if e.cell.isInterior then
 				if e.previousCell.isInterior then
-					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.name .. ".", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", "cell")
 				else
-					logMessage("" .. func.i18n("msgBox.cellLog.enter") .. " " .. e.cell.name .. "...", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.enter") .. " " .. e.cell.displayName .. "...", "cell")
 				end
 			else
 				if e.previousCell.isInterior then
-					logMessage("" .. func.i18n("msgBox.cellLog.exit") .. " " .. e.cell.name .. "...", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.exit") .. " " .. e.cell.displayName .. "...", "cell")
 				else
-					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.name .. ".", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", "cell")
 				end
 			end
 		end
@@ -303,7 +303,7 @@ local function onDamaged(e)
 	if config.dmgLog and e.source == "attack" then
 		if e.attacker then
 			if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
-				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. e.damage .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
+				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
 			end
 		end
 	end
@@ -314,7 +314,7 @@ local function onH2H(e)
 	if config.dmgLog and e.source == "attack" then
 		if e.attacker then
 			if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
-				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.strikes") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. e.fatigueDamage .. " " .. tes3.findGMST(tes3.gmst.sFatigue).value .. ".", "dmg")
+				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.strikes") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.fatigueDamage) .. " " .. tes3.findGMST(tes3.gmst.sFatigue).value .. ".", "dmg")
 			end
 		end
 	end
@@ -460,7 +460,8 @@ event.register(tes3.event.magicCasted, magicCastedCallback)
 
 
 
-
+--changed cell.name to cell.displayName for exteriors
+--need to round damage log
 
 
 --Config Stuff------------------------------------------------------------------------------------------------------------------------------
