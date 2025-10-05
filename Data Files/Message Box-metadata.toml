@@ -4,7 +4,7 @@ description = "This MWSE mod provides a message box that can entirely replace va
 homepage = "https://www.nexusmods.com/morrowind/mods/57553"
 repository = "https://github.com/Kleidium/messageBox"
 authors = ["Kleidium"]
-version = "1.0.0"
+version = "1.1.0"
 
 [tools.mwse]
 lua-mod = "messageBox"

@@ -300,11 +300,15 @@ end
 event.register("cellChanged", onCellChanged)
 
 local function onDamaged(e)
-	if config.dmgLog and e.source == "attack" then
-		if e.attacker then
-			if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
-				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
+	if config.dmgLog then
+		if e.source == "attack" then
+			if e.attacker then
+				if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
+					logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
+				end
 			end
+		elseif e.source == "fall" then
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.hitTheGround") .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
 		end
 	end
 end
@@ -460,8 +464,7 @@ event.register(tes3.event.magicCasted, magicCastedCallback)
 
 
 
---changed cell.name to cell.displayName for exteriors
---need to round damage log
+
 
 
 --Config Stuff------------------------------------------------------------------------------------------------------------------------------

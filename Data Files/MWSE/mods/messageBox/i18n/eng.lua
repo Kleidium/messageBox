@@ -37,11 +37,13 @@ return {
 	["msgBox.dayAbb.29"] = "th",
 	["msgBox.dayAbb.30"] = "th",
 	["msgBox.dayAbb.31"] = "st",
+	["msgBox.thirdEra"] = "3E",
 	["msgBox.cellLog.continue"] = "You continue to", --Logging Messages
 	["msgBox.cellLog.exit"] = "You exit to",
 	["msgBox.cellLog.enter"] = "You enter",
 	["msgBox.dmgLog.strikes"] = "strikes",
 	["msgBox.dmgLog.attacks"] = "attacks",
+	["msgBox.dmgLog.hitTheGround"] = "hit the ground",
 	["msgBox.dmgLog.for"] = "for",
 	["msgBox.deathLog.dies"] = "dies.",
 	["msgBox.resistLog.resisted"] = "resisted",
