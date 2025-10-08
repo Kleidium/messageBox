@@ -22,8 +22,8 @@ event.register("initialized", initialized)
 
 --Log message to box.
 --- @param msg string
---- @param key string?
-local function logMessage(msg, key)
+--- @param color table?
+local function logMessage(msg, color)
 	if string.find(msg, config.filterText, 1, true) then log:debug("Filter: \"" .. config.filterText .. "\" blocked.") return end
 	if config.msgLimit and box.num and box.num >= tonumber(config.maxMessages) then
 		log:debug("Message limit reached. Deleting older messages.")
@@ -52,28 +52,8 @@ local function logMessage(msg, key)
 	label.wrapText = true
 	label.borderBottom = config.msgOffset
 	label.color = { config.textRed, config.textGreen, config.textBlue }
-	if key then
-		if key == "dmg" then
-			label.color = { config.dmgRed, config.dmgGreen, config.dmgBlue }
-		elseif key == "cast" then
-			label.color = { config.castRed, config.castGreen, config.castBlue }
-		elseif key == "death" then
-			label.color = { config.dedRed, config.dedGreen, config.dedBlue }
-		elseif key == "resist" then
-			label.color = { config.resRed, config.resGreen, config.resBlue }
-		elseif key == "music" then
-			label.color = { config.musRed, config.musGreen, config.musBlue }
-		elseif key == "journal" then
-			label.color = { config.queRed, config.queGreen, config.queBlue }
-		elseif key == "dialogue" then
-			label.color = { config.diaRed, config.diaGreen, config.diaBlue }
-		elseif key == "cell" then
-			label.color = { config.cellRed, config.cellGreen, config.cellBlue }
-		elseif key == "topic" then
-			label.color = { config.topRed, config.topGreen, config.topBlue }
-		elseif key == "pop" then
-			label.color = { config.lastRed, config.lastGreen, config.lastBlue }
-		end
+	if color then
+		label.color = color
 	end
 	if string.find(text, config.highText, 1, true) then
 		label.color = { config.highRed, config.highGreen, config.highBlue }
@@ -85,6 +65,7 @@ local function logMessage(msg, key)
 	box.time = 0
 	--box.modData.lastMsg = text
 	box.menu:updateLayout() --update while invisible :(
+	log:debug(text)
 end
 
 
@@ -219,27 +200,27 @@ event.register("uiActivated", function(e)
 	log:trace("MenuMessage triggered.")
 	log:debug("Text: " .. elem.text .. "")
 	if elem.text and elem.text ~= "" and not elem.widget then
-		logMessage(elem.text, "pop")
+		logMessage(elem.text, { config.lastRed, config.lastGreen, config.lastBlue })
 	end
 	for i = 1, #elem.children do
 		local child = elem.children[i]
 		log:debug("Childi " .. i .. ": " .. child.text .. "")
 		if child.text and child.text ~= "" and not child.widget then
-			logMessage(child.text, "pop")
+			logMessage(child.text, { config.lastRed, config.lastGreen, config.lastBlue })
 		end
 		if child.children ~= nil then
 			for n = 1, #child.children do
 				local smolChild = child.children[n]
 				log:debug("Childn " .. n .. ": " .. smolChild.text .. "")
 				if smolChild.text and smolChild.text ~= "" and not smolChild.widget then
-					logMessage(smolChild.text, "pop")
+					logMessage(smolChild.text, { config.lastRed, config.lastGreen, config.lastBlue })
 				end
 				if smolChild.children ~= nil then
 					for t = 1, #smolChild.children do
 						local tinyChild = smolChild.children[t]
 						log:debug("Childt " .. t .. ": " .. tinyChild.text .. "")
 						if tinyChild.text and tinyChild.text ~= "" and not tinyChild.widget then
-							logMessage(tinyChild.text, "pop")
+							logMessage(tinyChild.text, { config.lastRed, config.lastGreen, config.lastBlue })
 						end
 					end
 				end
@@ -265,6 +246,7 @@ event.register(tes3.event.keyDown, function(e)
 			box.menu.visible = false
 			box.modData.visible = false
 		else
+			box.time = 0
 			box.menu.visible = true
 			box.modData.visible = true
 			box.menu:updateLayout()
@@ -283,15 +265,15 @@ local function onCellChanged(e)
 		if e.cell.displayName ~= e.previousCell.displayName then
 			if e.cell.isInterior then
 				if e.previousCell.isInterior then
-					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", { config.cellRed, config.cellGreen, config.cellBlue })
 				else
-					logMessage("" .. func.i18n("msgBox.cellLog.enter") .. " " .. e.cell.displayName .. "...", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.enter") .. " " .. e.cell.displayName .. "...", { config.cellRed, config.cellGreen, config.cellBlue })
 				end
 			else
 				if e.previousCell.isInterior then
-					logMessage("" .. func.i18n("msgBox.cellLog.exit") .. " " .. e.cell.displayName .. "...", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.exit") .. " " .. e.cell.displayName .. "...", { config.cellRed, config.cellGreen, config.cellBlue })
 				else
-					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", "cell")
+					logMessage("" .. func.i18n("msgBox.cellLog.continue") .. " " .. e.cell.displayName .. ".", { config.cellRed, config.cellGreen, config.cellBlue })
 				end
 			end
 		end
@@ -304,11 +286,11 @@ local function onDamaged(e)
 		if e.source == "attack" then
 			if e.attacker then
 				if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
-					logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
+					logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.attacks") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", { config.dmgRed, config.dmgGreen, config.dmgBlue })
 				end
 			end
 		elseif e.source == "fall" then
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.hitTheGround") .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", "dmg")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.hitTheGround") .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.damage) .. " " .. tes3.findGMST(tes3.gmst.sDamage).value .. ".", { config.dmgRed, config.dmgGreen, config.dmgBlue })
 		end
 	end
 end
@@ -318,7 +300,7 @@ local function onH2H(e)
 	if config.dmgLog and e.source == "attack" then
 		if e.attacker then
 			if e.attacker == tes3.mobilePlayer or e.mobile == tes3.mobilePlayer then
-				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.strikes") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.fatigueDamage) .. " " .. tes3.findGMST(tes3.gmst.sFatigue).value .. ".", "dmg")
+				logMessage("" .. e.attacker.object.name .. " " .. func.i18n("msgBox.dmgLog.strikes") .. " " .. e.mobile.object.name .. " " .. func.i18n("msgBox.dmgLog.for") .. " " .. math.round(e.fatigueDamage) .. " " .. tes3.findGMST(tes3.gmst.sFatigue).value .. ".", { config.dmgRed, config.dmgGreen, config.dmgBlue })
 			end
 		end
 	end
@@ -327,7 +309,7 @@ event.register(tes3.event.damagedHandToHand, onH2H)
 
 local function onDeath(e)
 	if config.deathLog then
-		logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.deathLog.dies") .. "", "death")
+		logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.deathLog.dies") .. "", { config.dedRed, config.dedGreen, config.dedBlue })
 	end
 end
 event.register("death", onDeath)
@@ -335,7 +317,7 @@ event.register("death", onDeath)
 local function onResist(e)
 	if config.resistLog then
 		if e.source.name then
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.resisted") .. " " .. e.source.name .. "!", "resist")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.resisted") .. " " .. e.source.name .. "!", { config.resRed, config.resGreen, config.resBlue })
 		end
 	end
 end
@@ -345,9 +327,9 @@ event.register("spellResisted", onResist)
 local function magicReflectedCallback(e)
 	if config.resistLog then
 		if e.source.name then
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.reflected") .. " " .. e.source.name .. "!", "resist")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.reflected") .. " " .. e.source.name .. "!", { config.resRed, config.resGreen, config.resBlue })
 		else
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.reflectedSpell") .. "", "resist")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.reflectedSpell") .. "", { config.resRed, config.resGreen, config.resBlue })
 		end
 	end
 end
@@ -357,9 +339,9 @@ event.register(tes3.event.magicReflected, magicReflectedCallback)
 local function absorbedMagicCallback(e)
 	if config.resistLog then
 		if e.source.name then
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.absorbed") .. " " .. e.source.name .. "!", "resist")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.absorbed") .. " " .. e.source.name .. "!", { config.resRed, config.resGreen, config.resBlue })
 		else
-			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.absorbedSpell") .. "", "resist")
+			logMessage("" .. e.mobile.object.name .. " " .. func.i18n("msgBox.resistLog.absorbedSpell") .. "", { config.resRed, config.resGreen, config.resBlue })
 		end
 	end
 end
@@ -373,7 +355,7 @@ local function onChangeMusic(e)
 				idx = string.find(e.music, "/[^/]*$")
 			end
 			local msg = string.sub(e.music, idx + 1)
-			logMessage("" .. func.i18n("msgBox.musicLog.nowPlaying") .. " " .. msg .. "", "music")
+			logMessage("" .. func.i18n("msgBox.musicLog.nowPlaying") .. " " .. msg .. "", { config.musRed, config.musGreen, config.musBlue })
 		end
 	end
 end
@@ -384,7 +366,7 @@ local function onJournal(e)
 		if e.info then
 			local msg = string.gsub(e.info.text, "@", "")
 			msg = string.gsub(msg, "#", "")
-			logMessage("" .. msg .. "", "journal")
+			logMessage("" .. msg .. "", { config.queRed, config.queGreen, config.queBlue })
 		end
 	end
 end
@@ -418,7 +400,7 @@ local function onGetInfo(e)
 				end
 			end
 		end
-		logMessage("" .. msg .. "", "dialogue")
+		logMessage("" .. msg .. "", { config.diaRed, config.diaGreen, config.diaBlue })
 	end
 end
 event.register("infoGetText", onGetInfo)
@@ -427,7 +409,7 @@ event.register("infoGetText", onGetInfo)
 local function dialogueFilteredCallback(e)
 	if config.showTopic then
 		if e.context == tes3.dialogueFilterContext.clickTopic then
-			logMessage("" .. func.i18n("msgBox.topicLog.topic") .. " " .. e.dialogue.id .. "", "topic")
+			logMessage("" .. func.i18n("msgBox.topicLog.topic") .. " " .. e.dialogue.id .. "", { config.topRed, config.topGreen, config.topBlue })
 		end
 	end
 end
@@ -443,7 +425,7 @@ event.register(tes3.event.uiEvent, function(e)
 		local idx = string.find(elem.text, "([^\\s]+)")
 		local msg = string.sub(elem.text, idx + 3)
 		msg = "" .. tes3.player.object.name .. ": " .. msg
-		logMessage("" .. msg, "topic")
+		logMessage("" .. msg, { config.topRed, config.topGreen, config.topBlue })
 	end
 
 end, { filter = -239 })
@@ -453,16 +435,26 @@ local function magicCastedCallback(e)
 	if config.castLog then
 		if e.source.objectType ~= tes3.objectType.alchemy then
 			if e.source.name and not e.source.isDisease then
-				logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.casts") .. " " .. e.source.name .. "!", "cast")
+				logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.casts") .. " " .. e.source.name .. "!", { config.castRed, config.castGreen, config.castBlue })
 			end
 		else
-			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.uses") .. " " .. e.source.name .. ".", "cast")
+			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.uses") .. " " .. e.source.name .. ".", { config.castRed, config.castGreen, config.castBlue })
 		end
 	end
 end
 event.register(tes3.event.magicCasted, magicCastedCallback)
 
-
+--- @param e calcHitChanceEventData
+local function calcHitChanceCallback(e)
+	if config.hitLog then
+		if e.targetMobile then
+			if e.attackerMobile == tes3.mobilePlayer or e.targetMobile == tes3.mobilePlayer then
+				logMessage("" .. e.attacker.object.name .. "'s " .. func.i18n("msgBox.hitLog.chanceToHit") .. " " .. e.targetMobile.object.name .. ": " .. math.round(e.hitChance, 2) .. "%.", { config.hitRed, config.hitGreen, config.hitBlue })
+			end
+		end
+	end
+end
+event.register(tes3.event.calcHitChance, calcHitChanceCallback)
 
 
 

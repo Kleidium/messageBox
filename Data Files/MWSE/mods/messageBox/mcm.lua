@@ -278,6 +278,12 @@ logSettings:createOnOffButton {
 }
 
 logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.hitLogging"),
+    description = func.i18n("msgBox.mcm.hitLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "hitLog", table = config }
+}
+
+logSettings:createOnOffButton {
     label = func.i18n("msgBox.mcm.castLogging"),
     description = func.i18n("msgBox.mcm.castLoggingDescription"),
     variable = mwse.mcm.createTableVariable { id = "castLog", table = config }
@@ -357,7 +363,7 @@ end
 
 createRGBSliders(cSettings, "text", func.i18n("msgBox.mcm.defaultColor"), func.i18n("msgBox.mcm.defaultColorDescription"))
 
-local hSettings = cPage:createCategory(func.i18n("msgBox.mcm.highlightedColor")) --Pink
+local hSettings = cPage:createCategory(func.i18n("msgBox.mcm.highlightedColor")) --Magenta
 createRGBSliders(hSettings, "high", func.i18n("msgBox.mcm.highlightedColor"), func.i18n("msgBox.mcm.highlightedColorDescription"))
 
 
@@ -411,6 +417,9 @@ createRGBSliders(cellSettings, "cell", func.i18n("msgBox.mcm.explorationLogColor
 
 local dmgSettings = cPage:createCategory(func.i18n("msgBox.mcm.combatLogColor")) --Red
 createRGBSliders(dmgSettings, "dmg", func.i18n("msgBox.mcm.combatLogColor"), func.i18n("msgBox.mcm.combatLogColorDescription"))
+
+local hitSettings = cPage:createCategory(func.i18n("msgBox.mcm.hitLogColor")) --Pink
+createRGBSliders(hitSettings, "hit", func.i18n("msgBox.mcm.hitLogColor"), func.i18n("msgBox.mcm.hitLogColorDescription"))
 
 local castSettings = cPage:createCategory(func.i18n("msgBox.mcm.castLogColor")) --Baby Blue
 createRGBSliders(castSettings, "cast", func.i18n("msgBox.mcm.castLogColor"), func.i18n("msgBox.mcm.castLogColorDescription"))

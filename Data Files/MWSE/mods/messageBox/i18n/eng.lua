@@ -6,7 +6,7 @@ return {
 	["msgBox.weekDay.5"] = "Turdas",
 	["msgBox.weekDay.6"] = "Fredas",
 	["msgBox.weekDay.7"] = "Loredas",
-	["msgBox.dayAbb.1"] = "st", --Days of the Month
+	["msgBox.dayAbb.1"] = "st", --Days of the Month: Suffixes
 	["msgBox.dayAbb.2"] = "nd",
 	["msgBox.dayAbb.3"] = "rd",
 	["msgBox.dayAbb.4"] = "th",
@@ -45,6 +45,7 @@ return {
 	["msgBox.dmgLog.attacks"] = "attacks",
 	["msgBox.dmgLog.hitTheGround"] = "hit the ground",
 	["msgBox.dmgLog.for"] = "for",
+	["msgBox.hitLog.chanceToHit"] = "chance to hit",
 	["msgBox.deathLog.dies"] = "dies.",
 	["msgBox.resistLog.resisted"] = "resisted",
 	["msgBox.resistLog.reflected"] = "reflected",
@@ -82,6 +83,8 @@ return {
 	["msgBox.mcm.topicLogColorDescription"] = "message box Topic/Answer log color",
 	["msgBox.mcm.musicLogColor"] = "Music Log Text Color",
 	["msgBox.mcm.musicLogColorDescription"] = "message box music log color",
+	["msgBox.mcm.hitLogColor"] = "Hit Chance Log Color",
+	["msgBox.mcm.hitLogColorDescription"] = "message box hit chance log color",
 	["msgBox.mcm.rgbRED"] = "RGB RED value for",
 	["msgBox.mcm.red"] = "Red",
 	["msgBox.mcm.rgbGREEN"] = "RGB GREEN value for",
@@ -150,7 +153,7 @@ return {
 	["msgBox.mcm.topicLogging"] = "Show Topics/Answers",
 	["msgBox.mcm.topicLoggingDescription"] = "If this is enabled, your answers to NPC questions and the topics you ask about are shown in the message box. Recommended for use with Chat Logging. Default: Off",
 	["msgBox.mcm.combatLogging"] = "Combat Logging",
-	["msgBox.mcm.combatLoggingDescription"] = "Turn on or off combat logging. Combat logging will announce health and fatigue damage dealt to and by the player by non-magical attacks. Default: Off",
+	["msgBox.mcm.combatLoggingDescription"] = "Turn on or off combat logging. Combat logging will announce health and fatigue damage dealt to and by the player by non-magical attacks, as well as fall damage. Default: Off",
 	["msgBox.mcm.castLogging"] = "Spell Cast Logging",
 	["msgBox.mcm.castLoggingDescription"] = "Turn on or off spell cast logging. Spell cast logging will announce when any entity successfully casts a spell or uses a potion. Default: Off",
 	["msgBox.mcm.resistLogging"] = "Spell Resist Logging",
@@ -161,4 +164,7 @@ return {
 	["msgBox.mcm.musicLoggingDescription"] = "Turn on or off music logging. Music logging will announce when a new music track is played. Default: Off",
 	["msgBox.mcm.showFullPath"] = "Show Full Path",
 	["msgBox.mcm.showFullPathDescription"] = "If this is enabled, songs logged with the Music Log will display the full path instead of only the file name. Default: Off",
+	["msgBox.mcm.hitLogging"] = "Hit Chance Logging",
+	["msgBox.mcm.hitLoggingDescription"] = "If this is enabled, hit chance calculations made by/against the player are logged in the message box. Default: Off",
+
 }
