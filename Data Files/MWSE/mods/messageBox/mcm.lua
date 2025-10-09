@@ -290,9 +290,21 @@ logSettings:createOnOffButton {
 }
 
 logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.cChanceLogging"),
+    description = func.i18n("msgBox.mcm.cChanceLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "cChanceLog", table = config }
+}
+
+logSettings:createOnOffButton {
     label = func.i18n("msgBox.mcm.resistLogging"),
     description = func.i18n("msgBox.mcm.resistLoggingDescription"),
     variable = mwse.mcm.createTableVariable { id = "resistLog", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.useLogging"),
+    description = func.i18n("msgBox.mcm.useLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "useLog", table = config }
 }
 
 logSettings:createOnOffButton {
@@ -423,6 +435,12 @@ createRGBSliders(hitSettings, "hit", func.i18n("msgBox.mcm.hitLogColor"), func.i
 
 local castSettings = cPage:createCategory(func.i18n("msgBox.mcm.castLogColor")) --Baby Blue
 createRGBSliders(castSettings, "cast", func.i18n("msgBox.mcm.castLogColor"), func.i18n("msgBox.mcm.castLogColorDescription"))
+
+local cChanceSettings = cPage:createCategory(func.i18n("msgBox.mcm.cChanceLogColor")) --Cyan
+createRGBSliders(cChanceSettings, "cChance", func.i18n("msgBox.mcm.cChanceLogColor"), func.i18n("msgBox.mcm.cChanceLogColorDescription"))
+
+local useSettings = cPage:createCategory(func.i18n("msgBox.mcm.useLogColor")) --Baby Blue also
+createRGBSliders(useSettings, "use", func.i18n("msgBox.mcm.useLogColor"), func.i18n("msgBox.mcm.useLogColorDescription"))
 
 local resSettings = cPage:createCategory(func.i18n("msgBox.mcm.resistLogColor")) --Purple
 createRGBSliders(resSettings, "res", func.i18n("msgBox.mcm.resistLogColor"), func.i18n("msgBox.mcm.resistLogColorDescription"))

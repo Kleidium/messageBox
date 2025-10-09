@@ -74,7 +74,9 @@ end
 ----------
 
 local function onLoad()
-	box.createBox()
+	if not box.menu then
+		box.createBox()
+	end
 end
 event.register("loaded", onLoad)
 
@@ -432,17 +434,31 @@ end, { filter = -239 })
 
 --- @param e magicCastedEventData
 local function magicCastedCallback(e)
-	if config.castLog then
-		if e.source.objectType ~= tes3.objectType.alchemy then
+	if e.source.objectType ~= tes3.objectType.alchemy then
+		--Spell
+		if config.castLog then
 			if e.source.name and not e.source.isDisease then
 				logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.casts") .. " " .. e.source.name .. "!", { config.castRed, config.castGreen, config.castBlue })
 			end
-		else
-			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castLog.uses") .. " " .. e.source.name .. ".", { config.castRed, config.castGreen, config.castBlue })
+		end
+	else
+		--Potion
+		if config.useLog then
+			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.useLog.uses") .. " " .. e.source.name .. ".", { config.useRed, config.useGreen, config.useBlue })
 		end
 	end
 end
 event.register(tes3.event.magicCasted, magicCastedCallback)
+
+--- @param e spellCastEventData
+local function spellCastCallback(e)
+	if config.cChanceLog then
+		if e.source.name and not e.source.isDisease then
+			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castChanceLog.attemptsToCast") .. " " .. e.source.name .. "! (" .. e.castChance .. "%)", { config.cChanceRed, config.cChanceGreen, config.cChanceBlue })
+		end
+	end
+end
+event.register(tes3.event.spellCast, spellCastCallback)
 
 --- @param e calcHitChanceEventData
 local function calcHitChanceCallback(e)
