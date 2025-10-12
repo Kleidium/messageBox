@@ -65,7 +65,7 @@ local function logMessage(msg, color)
 	box.time = 0
 	--box.modData.lastMsg = text
 	box.menu:updateLayout() --update while invisible :(
-	log:debug(text)
+	log:debug(msg)
 end
 
 
@@ -418,7 +418,7 @@ end
 event.register(tes3.event.dialogueFiltered, dialogueFilteredCallback)
 
 event.register(tes3.event.uiEvent, function(e)
-	if e.property ~= tes3.uiProperty.mouseDown then return end
+	if e.property ~= tes3.uiProperty.mouseDown or not config.showTopic then return end
 	local elem = e.source
 	log:trace("Answer choice triggered.")
 	log:debug("Text: " .. elem.text .. "")
@@ -454,7 +454,7 @@ event.register(tes3.event.magicCasted, magicCastedCallback)
 local function spellCastCallback(e)
 	if config.cChanceLog then
 		if e.source.name and not e.source.isDisease then
-			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castChanceLog.attemptsToCast") .. " " .. e.source.name .. "! (" .. e.castChance .. "%)", { config.cChanceRed, config.cChanceGreen, config.cChanceBlue })
+			logMessage("" .. e.caster.object.name .. " " .. func.i18n("msgBox.castChanceLog.attemptsToCast") .. " " .. e.source.name .. "! (" .. math.round(e.castChance, 2) .. "%)", { config.cChanceRed, config.cChanceGreen, config.cChanceBlue })
 		end
 	end
 end
