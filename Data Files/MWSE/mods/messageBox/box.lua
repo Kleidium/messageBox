@@ -12,7 +12,7 @@ function box.createBox()
 	local width = tonumber(config.width)
 	local height = tonumber(config.height)
 
-	local menu = tes3ui.createMenu({ id = "kl_mb_menu", dragFrame = true })
+	local menu = tes3ui.createMenu({ id = "kl_msgBox_menu", dragFrame = true })
 	menu.minHeight = 87
 	menu.minWidth = 237
 	if config.minSize then

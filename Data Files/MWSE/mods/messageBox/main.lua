@@ -33,7 +33,7 @@ local function logMessage(msg, color)
 		end
 	end
 
-	if not box.menu then
+	if not tes3ui.findMenu("kl_msgBox_menu") then
 		if tes3.player then
 			box.createBox()
 		else
@@ -74,7 +74,7 @@ end
 ----------
 
 local function onLoad()
-	if not box.menu then
+	if not tes3ui.findMenu("kl_msgBox_menu") then
 		box.createBox()
 	end
 end
@@ -236,7 +236,7 @@ end, { filter = "MenuMessage" })
 event.register(tes3.event.keyDown, function(e)
 	if e.keyCode ~= config.boxBind.keyCode then return end
 
-	if not box.menu then
+	if not tes3ui.findMenu("kl_msgBox_menu") then
 		if tes3.player then
 			box.createBox()
 		else
