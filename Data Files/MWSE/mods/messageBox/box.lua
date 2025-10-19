@@ -1,37 +1,38 @@
-local config = require("messageBox.config")
 local func = require("messageBox.common")
 local log = mwse.Logger.new()
 
 
 local box = {}
 
+box.config = require("messageBox.config") --Message Box config vars
+
 
 --Creates the message box.
 function box.createBox()
 	local viewportWidth, viewportHeight = tes3ui.getViewportSize()
-	local width = tonumber(config.width)
-	local height = tonumber(config.height)
+	local width = tonumber(box.config.width)
+	local height = tonumber(box.config.height)
 
 	local menu = tes3ui.createMenu({ id = "kl_msgBox_menu", dragFrame = true })
 	menu.minHeight = 87
 	menu.minWidth = 237
-	if config.minSize then
+	if box.config.minSize then
 		menu.minHeight = height
 		menu.minWidth = width
 	end
 	menu.height = height
 	menu.width = width
-	menu.text = config.titleText
+	menu.text = box.config.titleText
 	menu.positionY = (viewportHeight * 0.5)
 	menu.positionX = (menu.width / 2) * -1
-	if config.position == "bottom" then
+	if box.config.position == "bottom" then
 		menu.positionY = (viewportHeight * -0.5) + menu.height
-	elseif config.position == "tLeft" then
+	elseif box.config.position == "tLeft" then
 		menu.positionX = menu.positionX + (viewportWidth * -0.5) + (menu.width / 2)
-	elseif config.position == "tRight" then
+	elseif box.config.position == "tRight" then
 		menu.positionX = menu.positionX + (viewportWidth * 0.5) - (menu.width / 2)
 	end
-	menu.alpha = config.alpha
+	menu.alpha = box.config.alpha
 
 	local pane = menu:createVerticalScrollPane({})
 	pane.autoHeight = true
@@ -66,12 +67,12 @@ function box.createBox()
 	menu:updateLayout()
 	log:debug("Message Box created.")
 
-	if config.msgTimer then
+	if box.config.msgTimer then
 		timer.start({ type = timer.real, duration = 1, iterations = -1, persist = false, callback =
 		function()
 			if box.menu then
 				box.time = box.time + 1
-				if box.time >= config.msgTime then
+				if box.time >= box.config.msgTime then
 					box.menu.visible = false
 				end
 			end
@@ -104,7 +105,10 @@ box.colors = {
 	[22] = { 0.93, 0.51, 0.93 }, --Violet
 	[23] = { 1.00, 0.00, 1.00 }, -- Magenta
 	[24] = { 1.00, 1.00, 0.60 }, --Straw
-	[25] = { 0.00, 1.00, 1.00 } --Cyan
+	[25] = { 0.00, 1.00, 1.00 }, --Cyan
+	[26] = { 0.24, 0.93, 0.33 }, --UFO Green
+	[27] = { 0.66, 0.53, 0.99 }, --Matte Purple
+	[28] = { 0.95, 0.66, 0.36 } --Peach
 }
 
 --1 bricks
@@ -117,4 +121,62 @@ box.ascii = {
 	[3] = ".   .    . .  .   .  \\  .   . .  '    .     *    .      .'      .\n  .   \\  .   @  .    * . .     .  .   .  .   . '    .         .\n   * .   .   .  .    .   *.  .   ' .   @  .      .    .   *.\n.    .    * .  .   .    .   .[msg box]    .     .     . *.\n   .   .  .     .  *   .   '    .  .     *  .   . @    . '     .\n*     . .    .       .   .*     \\ .        .   '   .     .   .\n   .      .   .  .     .   .      .    .  \\  .*  .    .      .*\n    .        '        .     .            .            .\n.              .                   .          .                   .\n         .             '        .",
 	[4] = "[msg box]\n                        [msg box]\n         [msg box]\n                 [msg box]\n\n      [msg box]\n[msg box]                           [msg box]\n\n             [msg box]"
 }
+
+
+-----------
+--Helpers------------------------------------------------------------------------------------------------
+-----------
+
+--Log message to box.
+--- @param msg string --The message to display in the box.
+--- @param color table? --Optionally define your own RGB text color.
+function box.logMessage(msg, color)
+	if string.find(msg, box.config.filterText, 1, true) then log:debug("Filter: \"" .. box.config.filterText .. "\" blocked.") return end
+	if box.config.msgLimit and box.num and box.num >= tonumber(box.config.maxMessages) then
+		log:debug("Message limit reached. Deleting older messages.")
+		for i = 1, math.round(#box.pane:getContentElement().children * 0.3) do
+			box.pane:getContentElement().children[i]:destroy()
+			box.num = box.num - 1
+		end
+	end
+
+	if not tes3ui.findMenu("kl_msgBox_menu") then
+		if tes3.player then
+			box.createBox()
+		else
+			log:debug("No player ref. Message Box suppressed.")
+			return
+		end
+	end
+
+	local text = msg
+	if box.config.timeStamp then
+		text = "[" .. os.date(box.config.timeFormat) .. "] " .. msg .. ""
+	end
+
+	box.menu.visible = true
+	local label = box.pane:createLabel({ text = text })
+	label.wrapText = true
+	label.borderBottom = box.config.msgOffset
+	label.color = { box.config.textRed, box.config.textGreen, box.config.textBlue }
+	if color then
+		label.color = color
+	end
+	if string.find(text, box.config.highText, 1, true) then
+		label.color = { box.config.highRed, box.config.highGreen, box.config.highBlue }
+	end
+
+	box.pane.widget.positionY = 100000 --haha silly scroll bar
+	box.pane.widget:contentsChanged()
+	box.num = box.num + 1
+	box.time = 0
+	--box.modData.lastMsg = text
+	box.menu:updateLayout() --update while invisible :(
+	--log:debug("" .. msg)
+end
+
+
+
+
+
 return box

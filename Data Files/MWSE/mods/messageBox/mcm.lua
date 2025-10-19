@@ -378,52 +378,6 @@ createRGBSliders(cSettings, "text", func.i18n("msgBox.mcm.defaultColor"), func.i
 local hSettings = cPage:createCategory(func.i18n("msgBox.mcm.highlightedColor")) --Magenta
 createRGBSliders(hSettings, "high", func.i18n("msgBox.mcm.highlightedColor"), func.i18n("msgBox.mcm.highlightedColorDescription"))
 
-
--- local lasSettings = cPage:createCategory("Last Message Text Color") --Grey
-
--- lasSettings:createSlider {
---     label = "Last Msg Color: Red",
---     description = "RGB RED value for message box \"last message\" color.",
---     max = 1.00,
---     min = 0.00,
--- 	jump = 0.10,
--- 	step = 0.01,
--- 	decimalPlaces = 2,
---     variable = EasyMCM:createTableVariable {
---         id = "lastRed",
---         table = config
---     }
--- }
-
--- lasSettings:createSlider {
---     label = "Last Msg Color: Green",
---     description = "RGB GREEN value for message box \"last message\" color.",
---     max = 1.00,
---     min = 0.00,
--- 	jump = 0.10,
--- 	step = 0.01,
--- 	decimalPlaces = 2,
---     variable = EasyMCM:createTableVariable {
---         id = "lastGreen",
---         table = config
---     }
--- }
-
--- lasSettings:createSlider {
---     label = "Last Msg Color: Blue",
---     description = "RGB BLUE value for message box \"last message\" color.",
---     max = 1.00,
---     min = 0.00,
--- 	jump = 0.10,
--- 	step = 0.01,
--- 	decimalPlaces = 2,
---     variable = EasyMCM:createTableVariable {
---         id = "lastBlue",
---         table = config
---     }
--- }
-
-
 local cellSettings = cPage:createCategory(func.i18n("msgBox.mcm.explorationLogColor")) --Green
 createRGBSliders(cellSettings, "cell", func.i18n("msgBox.mcm.explorationLogColor"), func.i18n("msgBox.mcm.explorationLogColorDescription"))
 
@@ -459,3 +413,11 @@ createRGBSliders(topSettings, "top", func.i18n("msgBox.mcm.topicLogColor"), func
 
 local musSettings = cPage:createCategory(func.i18n("msgBox.mcm.musicLogColor")) --Minty
 createRGBSliders(musSettings, "mus", func.i18n("msgBox.mcm.musicLogColor"), func.i18n("msgBox.mcm.musicLogColorDescription"))
+
+--Interop Colors
+
+local dtSettings = cPage:createCategory(func.i18n("msgBox.mcm.dtLogColor")) --Peach
+createRGBSliders(dtSettings, "dt", func.i18n("msgBox.mcm.dtLogColor"), func.i18n("msgBox.mcm.dtLogColorDescription"))
+
+local clSettings = cPage:createCategory(func.i18n("msgBox.mcm.clLogColor")) --Matte Purple
+createRGBSliders(clSettings, "cl", func.i18n("msgBox.mcm.clLogColor"), func.i18n("msgBox.mcm.clLogColorDescription"))
