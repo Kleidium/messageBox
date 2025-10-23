@@ -33,6 +33,7 @@ end
 
 local settings = createPage(func.i18n("msgBox.mcm.generalSettings"))
 local cPage = createPage(func.i18n("msgBox.mcm.colorSettings"))
+local iPage = createPage(func.i18n("msgBox.mcm.interopSettings"))
 
 
 
@@ -148,7 +149,7 @@ cdSettings:createOnOffButton {
 cdSettings:createSlider {
     label = func.i18n("msgBox.mcm.messageTime"),
     description = func.i18n("msgBox.mcm.messageTimeDescription"),
-    max = 60,
+    max = 300,
     min = 3,
 	jump = 5,
 	step = 1,
@@ -269,6 +270,36 @@ logSettings:createOnOffButton {
     label = func.i18n("msgBox.mcm.topicLogging"),
     description = func.i18n("msgBox.mcm.topicLoggingDescription"),
     variable = mwse.mcm.createTableVariable { id = "showTopic", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.barterLogging"),
+    description = func.i18n("msgBox.mcm.barterLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "barterLog", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.buyLogging"),
+    description = func.i18n("msgBox.mcm.buyLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "buyLog", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.sellLogging"),
+    description = func.i18n("msgBox.mcm.sellLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "sellLog", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.dropLogging"),
+    description = func.i18n("msgBox.mcm.dropLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "dropLog", table = config }
+}
+
+logSettings:createOnOffButton {
+    label = func.i18n("msgBox.mcm.grabLogging"),
+    description = func.i18n("msgBox.mcm.grabLoggingDescription"),
+    variable = mwse.mcm.createTableVariable { id = "grabLog", table = config }
 }
 
 logSettings:createOnOffButton {
@@ -411,13 +442,25 @@ createRGBSliders(diaSettings, "dia", func.i18n("msgBox.mcm.chatLogColor"), func.
 local topSettings = cPage:createCategory(func.i18n("msgBox.mcm.topicLogColor")) --Answer Maroon
 createRGBSliders(topSettings, "top", func.i18n("msgBox.mcm.topicLogColor"), func.i18n("msgBox.mcm.topicLogColorDescription"))
 
+local buySettings = cPage:createCategory(func.i18n("msgBox.mcm.buyLogColor")) --Dark Gold
+createRGBSliders(buySettings, "buy", func.i18n("msgBox.mcm.buyLogColor"), func.i18n("msgBox.mcm.buyLogColorDescription"))
+
+local sellSettings = cPage:createCategory(func.i18n("msgBox.mcm.sellLogColor")) --Light Gold
+createRGBSliders(sellSettings, "sell", func.i18n("msgBox.mcm.sellLogColor"), func.i18n("msgBox.mcm.sellLogColorDescription"))
+
+local dropSettings = cPage:createCategory(func.i18n("msgBox.mcm.dropLogColor")) --Mocha
+createRGBSliders(dropSettings, "drop", func.i18n("msgBox.mcm.dropLogColor"), func.i18n("msgBox.mcm.dropLogColorDescription"))
+
+local grabSettings = cPage:createCategory(func.i18n("msgBox.mcm.grabLogColor")) --Choccy Milk
+createRGBSliders(grabSettings, "grab", func.i18n("msgBox.mcm.grabLogColor"), func.i18n("msgBox.mcm.grabLogColorDescription"))
+
 local musSettings = cPage:createCategory(func.i18n("msgBox.mcm.musicLogColor")) --Minty
 createRGBSliders(musSettings, "mus", func.i18n("msgBox.mcm.musicLogColor"), func.i18n("msgBox.mcm.musicLogColorDescription"))
 
 --Interop Colors
 
-local dtSettings = cPage:createCategory(func.i18n("msgBox.mcm.dtLogColor")) --Peach
+local dtSettings = iPage:createCategory(func.i18n("msgBox.mcm.dtLogColor")) --Peach
 createRGBSliders(dtSettings, "dt", func.i18n("msgBox.mcm.dtLogColor"), func.i18n("msgBox.mcm.dtLogColorDescription"))
 
-local clSettings = cPage:createCategory(func.i18n("msgBox.mcm.clLogColor")) --Matte Purple
+local clSettings = iPage:createCategory(func.i18n("msgBox.mcm.clLogColor")) --Matte Purple
 createRGBSliders(clSettings, "cl", func.i18n("msgBox.mcm.clLogColor"), func.i18n("msgBox.mcm.clLogColorDescription"))

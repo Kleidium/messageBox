@@ -419,8 +419,54 @@ local function calcHitChanceCallback(e)
 end
 event.register(tes3.event.calcHitChance, calcHitChanceCallback)
 
+--- @param e barterOfferEventData
+local function barterOfferCallback(e)
+	if e.success then
+		--Bought
+		if config.buyLog and #e.buying > 0 then
+			box.logMessage("" .. func.i18n("msgBox.barterLog.bought"), { config.buyRed, config.buyGreen, config.buyBlue })
+			for i = 1, #e.buying do
+				local tile = e.buying[i]
+				box.logMessage("x" .. tile.count .. " " .. tile.item.name .. "", { config.buyRed, config.buyGreen, config.buyBlue })
+			end
+			box.logMessage("*****", { config.buyRed, config.buyGreen, config.buyBlue })
+		end
+		--Sold
+		if config.sellLog and #e.selling > 0 then
+			box.logMessage("" .. func.i18n("msgBox.barterLog.sold"), { config.sellRed, config.sellGreen, config.sellBlue })
+			for i = 1, #e.selling do
+				local tile = e.selling[i]
+				box.logMessage("x" .. tile.count .. " " .. tile.item.name .. "", { config.sellRed, config.sellGreen, config.sellBlue })
+			end
+			box.logMessage("*****", { config.sellRed, config.sellGreen, config.sellBlue })
+		end
+		--Total
+		if config.barterLog then
+			if e.value < 0 then
+				box.logMessage("" .. func.i18n("msgBox.barterLog.spent") .. " " .. math.abs(e.offer) .. " " .. tes3.findGMST(tes3.gmst.sGold).value .. ".", { config.buyRed, config.buyGreen, config.buyBlue })
+			else
+				box.logMessage("" .. func.i18n("msgBox.barterLog.profit") .. " " .. e.offer .. " " .. tes3.findGMST(tes3.gmst.sGold).value .. ".", { config.sellRed, config.sellGreen, config.sellBlue })
+			end
+		end
+	end
+end
+event.register(tes3.event.barterOffer, barterOfferCallback)
 
+--- @param e itemDroppedEventData
+local function itemDroppedCallback(e)
+	if config.dropLog then
+		box.logMessage("" .. func.i18n("msgBox.dropLog.dropped") .. " " .. e.reference.object.name .. ". (" .. tes3.getPlayerCell().displayName .. ")", {config.dropRed, config.dropGreen, config.dropBlue })
+	end
+end
+event.register(tes3.event.itemDropped, itemDroppedCallback)
 
+--- @param e convertReferenceToItemEventData
+local function convertReferenceToItemCallback(e)
+	if config.grabLog then
+		box.logMessage("" .. e.reference.object.name .. " " .. func.i18n("msgBox.grabLog.picked") .. "", { config.grabRed, config.grabGreen, config.grabBlue })
+	end
+end
+event.register(tes3.event.convertReferenceToItem, convertReferenceToItemCallback)
 
 --Config Stuff------------------------------------------------------------------------------------------------------------------------------
 event.register("modConfigReady", function()
