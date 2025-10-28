@@ -47,9 +47,9 @@ function box.createBox()
  
 	local label = pane:createTextSelect({text = box.ascii[math.random(1, #box.ascii)]})
 	label.widget.idle = box.colors[math.random(1, #box.colors)]
-	label.widget.over = box.colors[math.random(1, #box.colors)]
 
 	box.modData = func.getModDataP()
+	label.widget.over = box.colors[math.random(1, #box.colors)]
 
 	local day = func.i18n(string.format("msgBox.weekDay.%d", (tes3.worldController.daysPassed.value + 3) % 7 + 1))
 	local abb = func.i18n(string.format("msgBox.dayAbb.%d", tes3.worldController.day.value))

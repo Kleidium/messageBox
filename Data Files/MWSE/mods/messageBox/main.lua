@@ -463,7 +463,11 @@ event.register(tes3.event.itemDropped, itemDroppedCallback)
 --- @param e convertReferenceToItemEventData
 local function convertReferenceToItemCallback(e)
 	if config.grabLog then
-		box.logMessage("" .. e.reference.object.name .. " " .. func.i18n("msgBox.grabLog.picked") .. "", { config.grabRed, config.grabGreen, config.grabBlue })
+		if not e.reference.mobile then
+			box.logMessage("" .. e.reference.object.name .. " " .. func.i18n("msgBox.grabLog.picked") .. "", { config.grabRed, config.grabGreen, config.grabBlue })
+		else
+			box.logMessage("" .. e.reference.object.name .. " " .. func.i18n("msgBox.grabLog.stuck") .. "", { config.grabRed, config.grabGreen, config.grabBlue })
+		end
 	end
 end
 event.register(tes3.event.convertReferenceToItem, convertReferenceToItemCallback)

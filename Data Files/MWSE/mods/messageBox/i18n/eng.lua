@@ -63,6 +63,7 @@ return {
 	["msgBox.barterLog.sold"] = "[SOLD]:",
 	["msgBox.dropLog.dropped"] = "You dropped",
 	["msgBox.grabLog.picked"] = "was picked up.",
+	["msgBox.grabLog.stuck"] = "stuck into its target.",
 	["msgBox.mcm.description"] = --MCM
 	"Logs all message boxes that pop up on the screen. These message boxes can come from anywhere, such as dialogue subtitles or messages displayed by mods. Optionally add additional logging such as exploration logging, combat logging, quest logging, and more. Toggle the box by using the box button (Default: B key).\n\n\nRecommended Box Dimensions:\n\nMessage Offset 2\n237x87 (Tiny, 2 lines)\n317x127 (Small, 4 lines)\n437x167 (Medium, 6 lines)\n517x207 (Large, 8 lines)\n597x247 (Extra Large, 10 lines)",
 	["msgBox.mcm.generalSettings"] = "General Settings",
